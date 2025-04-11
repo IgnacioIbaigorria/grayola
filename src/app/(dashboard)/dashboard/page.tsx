@@ -22,7 +22,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
-import { UserContext } from "@/app/(dashboard)/layout"
+import { UserContext } from "../../../lib/context/user-context"
 
 export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([])

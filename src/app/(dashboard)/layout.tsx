@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, createContext } from "react"
+import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
@@ -9,9 +9,8 @@ import { User } from "@/types"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import React from "react"
-
-// Crear un contexto para el usuario
-export const UserContext = createContext<User | null>(null)
+// Import UserContext from the separate file instead of defining it here
+import { UserContext } from "@/lib/context/user-context"
 
 export default function DashboardLayout({
   children,

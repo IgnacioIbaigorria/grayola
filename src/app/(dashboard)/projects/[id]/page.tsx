@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { UserContext } from "../../layout"
+import { UserContext } from "../../../../lib/context/user-context"
 
 export default function ProjectDetailPage({ 
   params, 

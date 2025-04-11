@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { User } from "@/types"
 import { Skeleton } from "@/components/ui/skeleton"
-import { UserContext } from "@/app/(dashboard)/layout"
+import { UserContext } from "@/lib/context/user-context"
 import { Label } from "@/components/ui/label"
 
 export default function ProfilePage() {

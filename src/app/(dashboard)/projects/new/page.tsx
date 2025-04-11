@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import { UserContext } from "@/app/(dashboard)/layout"
+import { UserContext } from "../../../../lib/context/user-context"
 import { Skeleton } from "@/components/ui/skeleton"
 import  Link  from "next/link"
 
