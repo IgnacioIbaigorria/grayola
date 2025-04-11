@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grayola - Plataforma de Gestión de Proyectos
 
-## Getting Started
+Grayola es una aplicación web para la gestión de proyectos de diseño que permite a clientes, diseñadores y gestores de proyectos colaborar en un mismo espacio.
 
-First, run the development server:
+## Características
+
+- Autenticación de usuarios con diferentes roles (cliente, diseñador, gestor de proyectos)
+- Creación y gestión de proyectos
+- Carga y descarga de archivos
+- Perfiles de usuario personalizables
+- Interfaz responsiva y moderna
+
+## Tecnologías utilizadas
+
+- Next.js 15
+- TypeScript
+- Supabase (autenticación y base de datos)
+- Tailwind CSS
+- shadcn/ui
+
+## Requisitos previos
+
+- Node.js 18.x o superior
+- npm o yarn
+- Cuenta en Supabase
+
+## Instalación
+
+1. Clona este repositorio:
+
+```bash
+git clone https://github.com/IgnacioIbaigorria/grayola.git
+cd grayola
+```
+2. Instala las dependencias:
+```bash
+npm install
+# o
+yarn install
+```
+3. Crea un archivo `.env.local` en la raíz del proyecto y agrega las variables de entorno necesarias:
+```bash
+NEXT_PUBLIC_SUPABASE_URL=tu-url-de-supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-clave-anonima-de-supabase
+```
+## Configuración de Supabase
+1. Crea un nuevo proyecto en Supabase
+2. Ejecuta las siguientes consultas SQL para crear las tablas necesarias:
+```sql
+-- Tabla de perfiles
+CREATE TABLE profiles (
+  id UUID REFERENCES auth.users(id) PRIMARY KEY,
+  name TEXT,
+  role TEXT CHECK (role IN ('client', 'designer', 'project_manager')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de proyectos
+CREATE TABLE projects (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
+  description TEXT,
+  client_id UUID REFERENCES profiles(id),
+  designer_id UUID REFERENCES profiles(id),
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'in_progress', 'completed')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla de archivos de proyecto
+CREATE TABLE project_files (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+  file_path TEXT NOT NULL,
+  file_name TEXT NOT NULL,
+  uploaded_by UUID REFERENCES profiles(id),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+3. Configura el almacenamiento en Supabase:
+   - Crea un nuevo bucket llamado project-files
+   - Establece las políticas de acceso adecuadas
+
+## Ejecución en desarrollo
+Para iniciar el servidor de desarrollo:
 
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+La aplicación estará disponible en http://localhost:3000.
+
+## Construcción para producción
+Para construir la aplicación para producción:
+
+Para iniciar la versión de producción:
+
+## Estructura del proyecto
+```plaintext
+src/
+├── app/                  # Rutas de la aplicación
+│   ├── (auth)/           # Rutas de autenticación
+│   └── (dashboard)/      # Rutas del dashboard
+├── components/           # Componentes reutilizables
+│   └── ui/               # Componentes de UI
+├── lib/                  # Utilidades y configuraciones
+└── types/                # Definiciones de tipos
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Este README proporciona una guía clara y personal para ejecutar tu proyecto localmente, con instrucciones detalladas sobre la configuración de Supabase y la estructura del proyecto. Incluye secciones sobre tecnologías utilizadas, requisitos previos, instalación y ejecución, lo que facilita a cualquier desarrollador entender y trabajar con tu código.
