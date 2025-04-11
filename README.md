@@ -1,6 +1,6 @@
-# Grayola - Plataforma de Gestión de Proyectos
+# Plataforma de Gestión de Proyectos
 
-Grayola es una aplicación web para la gestión de proyectos de diseño que permite a clientes, diseñadores y gestores de proyectos colaborar en un mismo espacio.
+La siguiente es una aplicación web para la gestión de proyectos de diseño que permite a clientes, diseñadores y gestores de proyectos colaborar en un mismo espacio.
 
 ## Características
 
