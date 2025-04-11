@@ -6,10 +6,8 @@ import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { User } from "@/types"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import React from "react"
-// Import UserContext from the separate file instead of defining it here
 import { UserContext } from "@/lib/context/user-context"
 
 export default function DashboardLayout({
