@@ -14,7 +14,6 @@ import  Link  from "next/link"
 export default function NewProjectPage() {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [initialLoading, setInitialLoading] = useState(true)
   const [files, setFiles] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -101,7 +100,7 @@ export default function NewProjectPage() {
     }
   }
 
-  if (initialLoading) {
+  if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-6">

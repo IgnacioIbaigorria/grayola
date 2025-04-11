@@ -41,25 +41,28 @@ export default function DashboardLayout({
           .single()
 
         if (profileError) {
-          throw profileError
+          console.error("Profile error:", profileError)
+          // En lugar de lanzar error, redirigir al login
+          router.push("/login")
+          return
         }
 
         const currentUser = {
           id: authUser.id,
           email: authUser.email!,
-          name: profileData.name || 'User',
-          role: profileData.role,
+          name: profileData?.name || 'User',
+          role: profileData?.role || 'client',
           created_at: authUser.created_at,
         }
 
         setUser(currentUser)
         // Establecer que la autenticación ha sido verificada
         setAuthChecked(true)
+        setLoading(false)
       } catch (error) {
         console.error("Error fetching user:", error)
+        setLoading(false) // Asegúrate de que loading se establezca en false incluso en caso de error
         router.push("/login")
-      } finally {
-        setLoading(false)
       }
     }
 
