@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
@@ -22,72 +22,56 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
+import { UserContext } from "@/app/(dashboard)/layout"
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<User | null>(null)
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [projectToDelete, setProjectToDelete] = useState<string | null>(null)
   const router = useRouter()
+  
+  // Usar el contexto para obtener el usuario
+  const user = useContext(UserContext)
 
   useEffect(() => {
-    const fetchUserAndProjects = async () => {
+    const fetchProjects = async () => {
       try {
-        // Get the current user
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        
-        if (!authUser) {
+        // Verificar si tenemos el usuario del contexto
+        if (!user) {
+          console.error("User not found in context")
           router.push("/login")
           return
         }
 
-        // Get the user's profile with role
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', authUser.id)
-          .single()
+        let query = supabase.from('projects').select('*')
 
-        if (profileError) {
-          throw profileError
+        // Filtrar proyectos según el rol del usuario
+        if (user.role === 'client') {
+          query = query.eq('client_id', user.id)
+        } else if (user.role === 'designer') {
+          query = query.eq('designer_id', user.id)
         }
 
-        const currentUser = {
-          id: authUser.id,
-          email: authUser.email!,
-          role: profileData.role,
-          created_at: authUser.created_at,
+        // Ordenar por fecha de creación (más recientes primero)
+        query = query.order('created_at', { ascending: false })
+
+        const { data, error } = await query
+
+        if (error) {
+          throw error
         }
 
-        setUser(currentUser)
-
-        // Fetch projects based on user role
-        let projectsQuery = supabase.from('projects').select('*')
-
-        if (currentUser.role === 'client') {
-          projectsQuery = projectsQuery.eq('client_id', currentUser.id)
-        } else if (currentUser.role === 'designer') {
-          projectsQuery = projectsQuery.eq('designer_id', currentUser.id)
-        }
-        // Project managers can see all projects
-
-        const { data: projectsData, error: projectsError } = await projectsQuery
-
-        if (projectsError) {
-          throw projectsError
-        }
-
-        setProjects(projectsData || [])
+        setProjects(data || [])
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error("Error fetching projects:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchUserAndProjects()
-  }, [router])
+    fetchProjects()
+  }, [router, user])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()

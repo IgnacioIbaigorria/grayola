@@ -1,32 +1,27 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useContext } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
-import Link from "next/link"
+import { UserContext } from "@/app/(dashboard)/layout"
 import { Skeleton } from "@/components/ui/skeleton"
+import  Link  from "next/link"
 
 export default function NewProjectPage() {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
+  const [initialLoading, setInitialLoading] = useState(true)
   const [files, setFiles] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
-  const [initialLoading, setInitialLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-
-  // Simular carga inicial
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setInitialLoading(false)
-    }, 1000)
-    
-    return () => clearTimeout(timer)
-  }, [])
+  
+  // Usar el contexto para obtener el usuario
+  const user = useContext(UserContext)
 
   const isFormValid = () => {
     return title.trim() !== "" && description.trim() !== "";
@@ -45,9 +40,7 @@ export default function NewProjectPage() {
     setError(null)
 
     try {
-      // Get current user
-      const { data: { user } } = await supabase.auth.getUser()
-      
+      // Verificar si tenemos el usuario del contexto
       if (!user) {
         throw new Error("You must be logged in to create a project")
       }
@@ -90,6 +83,7 @@ export default function NewProjectPage() {
               project_id: project.id,
               file_path: filePath,
               file_name: file.name,
+              uploaded_by: user.id
             })
 
           if (fileRecordError) {
@@ -99,8 +93,9 @@ export default function NewProjectPage() {
       }
 
       router.push("/dashboard")
-    } catch (error: any) {
-      setError(error.message || "An error occurred while creating the project")
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An error occurred while creating the project";
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }

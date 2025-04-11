@@ -1,69 +1,52 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { User } from "@/types"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { UserContext } from "@/app/(dashboard)/layout"
+import { Label } from "@/components/ui/label"
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<User | null>(null)
   const [name, setName] = useState("")
-  const [originalName, setOriginalName] = useState("") // Guardar el valor original
+  const [originalName, setOriginalName] = useState("")
   const [email, setEmail] = useState("")
-  const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
+  
+  // Usar el contexto para obtener el usuario
+  const user = useContext(UserContext)
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const fetchProfile = async () => {
       try {
-        // Get current user
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        
-        if (!authUser) {
+        // Verificar si tenemos el usuario del contexto
+        if (!user) {
+          console.error("User not found in context")
           router.push("/login")
           return
         }
 
-        // Get user profile with role
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', authUser.id)
-          .single()
-
-        if (profileError) {
-          throw profileError
-        }
-
-        const currentUser = {
-          id: authUser.id,
-          email: authUser.email!,
-          name: profileData.name || '',
-          role: profileData.role,
-          created_at: authUser.created_at,
-        }
-
-        setUser(currentUser)
-        setName(currentUser.name)
-        setOriginalName(currentUser.name) // Guardar el valor original
-        setEmail(currentUser.email)
-      } catch (error: any) {
-        setError(error.message || "An error occurred while fetching user data")
-      } finally {
+        // Establecer el nombre del usuario
+        setName(user.name || '')
+        setEmail(user.email || '')
+        setOriginalName(user.name || '')
+        setLoading(false)
+      } catch (error) {
+        console.error("Error fetching profile:", error)
         setLoading(false)
       }
     }
 
-    fetchUserProfile()
-  }, [router])
+    fetchProfile()
+  }, [router, user])
 
   // Verificar si los datos han cambiado
   const hasChanges = () => {
@@ -129,15 +112,7 @@ export default function ProfilePage() {
             
             <div className="space-y-2">
               <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-32 w-full" />
-            </div>
-            
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-24" />
-              <div className="space-y-2">
-                <Skeleton className="h-12 w-full" />
-                <Skeleton className="h-12 w-full" />
-              </div>
+              <Skeleton className="h-10 w-full" />
             </div>
             
             <div className="space-y-2">
@@ -145,7 +120,7 @@ export default function ProfilePage() {
               <Skeleton className="h-10 w-full" />
             </div>
             
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-end space-x-4 mt-6">
               <Skeleton className="h-10 w-24" />
               <Skeleton className="h-10 w-32" />
             </div>

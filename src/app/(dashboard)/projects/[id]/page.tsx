@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useEffect, useState } from "react"
+import { use, useContext, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
@@ -14,8 +14,13 @@ import {
 } from "@/components/ui/dialog"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { UserContext } from "../../layout"
 
-export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default function ProjectDetailPage({ 
+  params, 
+}: { 
+  params: Promise<{ id: string }>,
+}) {
   const { id } = use(params);
   const [project, setProject] = useState<Project | null>(null)
   const [files, setFiles] = useState<ProjectFile[]>([])
@@ -26,8 +31,16 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   const [isDesignerDialogOpen, setIsDesignerDialogOpen] = useState(false)
   const [assigningDesigner, setAssigningDesigner] = useState(false)
   const router = useRouter()
+  const currentUser = useContext(UserContext);
 
-  // Modify the fetchProjectData function to include name
+  // Usar currentUser si está disponible
+  useEffect(() => {
+    if (currentUser) {
+      setUser(currentUser);
+    }
+  }, [currentUser]);
+
+  // Modificar fetchProjectData para no verificar autenticación si ya tenemos el usuario
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
@@ -39,34 +52,38 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
           return
         }
 
-        // Get current user
-        const { data: { user: authUser } } = await supabase.auth.getUser()
-        
-        if (!authUser) {
-          router.push("/login")
-          return
+        // Si no tenemos el usuario del layout, obtenerlo
+        let currentUser = user;
+        if (!currentUser) {
+          // Get current user
+          const { data: { user: authUser } } = await supabase.auth.getUser()
+          
+          if (!authUser) {
+            router.push("/login")
+            return
+          }
+
+          // Get user profile with role
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', authUser.id)
+            .single()
+
+          if (profileError) {
+            throw profileError
+          }
+
+          currentUser = {
+            id: authUser.id,
+            email: authUser.email!,
+            name: profileData.name || 'User',
+            role: profileData.role,
+            created_at: authUser.created_at,
+          }
+
+          setUser(currentUser)
         }
-
-        // Get user profile with role
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', authUser.id)
-          .single()
-
-        if (profileError) {
-          throw profileError
-        }
-
-        const currentUser = {
-          id: authUser.id,
-          email: authUser.email!,
-          name: profileData.name || 'User', // Add name with fallback
-          role: profileData.role,
-          created_at: authUser.created_at,
-        }
-
-        setUser(currentUser)
 
         // Fetch project - asegúrate de que id es una string
         const projectId = String(id)
@@ -120,15 +137,16 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
         }
 
         setFiles(filesData || [])
-      } catch (error: any) {
-        setError(error.message || "An error occurred while fetching project data")
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "An error occurred while fetching project data";
+        setError(errorMessage)
       } finally {
         setLoading(false)
       }
     }
 
     fetchProjectData()
-  }, [router]) // Elimina id de las dependencias
+  }, [id, router, user])
 
   const handleDownloadFile = async (file: ProjectFile) => {
     try {
@@ -323,9 +341,9 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow rounded-lg overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
+          <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <h1 className="text-2xl font-bold text-gray-900">{project.title}</h1>
-            <div className="flex space-x-3">
+            <div className="flex flex-wrap gap-2">
               <Button variant="outline" onClick={() => router.push("/dashboard")}>
                 Back
               </Button>
