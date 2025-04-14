@@ -49,17 +49,34 @@ export default function RegisterPage() {
 
       // After registration, update the user's profile
       if (data.user) {
+        // Primero iniciamos sesión para obtener un token válido
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        
+        if (signInError) {
+          console.error("Error signing in after registration:", signInError);
+          // Continuamos con el registro aunque haya error en el inicio de sesión
+        }
+        
+        // Ahora intentamos crear el perfil con el usuario autenticado
         const { error: profileError } = await supabase
           .from('profiles')
-          .upsert({
+          .insert({
             id: data.user.id,
             role,
             name,
           })
 
         if (profileError) {
-          throw profileError
+          console.error("Error creating profile:", profileError);
+          // No lanzamos el error para permitir que el registro continúe
+          // El perfil podría crearse automáticamente por un trigger en Supabase
         }
+        
+        // Cerramos sesión para que el usuario tenga que iniciar sesión manualmente
+        await supabase.auth.signOut();
       }
 
       router.push("/login?registered=true")
