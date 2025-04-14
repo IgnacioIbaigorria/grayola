@@ -44,6 +44,7 @@ export default function DashboardPage() {
           return
         }
 
+        // Primero obtenemos los proyectos
         let query = supabase.from('projects').select('*')
 
         // Filtrar proyectos según el rol del usuario
@@ -56,13 +57,44 @@ export default function DashboardPage() {
         // Ordenar por fecha de creación (más recientes primero)
         query = query.order('created_at', { ascending: false })
 
-        const { data, error } = await query
+        const { data: projectsData, error } = await query
 
         if (error) {
           throw error
         }
 
-        setProjects(data || [])
+        // Ahora obtenemos los perfiles para los diseñadores
+        const designerIds = projectsData
+          .filter(project => project.designer_id)
+          .map(project => project.designer_id);
+        
+        if (designerIds.length > 0) {
+          const { data: designerProfiles, error: designersError } = await supabase
+            .from('profiles')
+            .select('id, name')
+            .in('id', designerIds);
+          
+          if (designersError) {
+            console.error("Error fetching designers:", designersError);
+          } else {
+            // Crear un mapa de id -> nombre para búsqueda rápida
+            const designerMap = new Map();
+            designerProfiles?.forEach(profile => {
+              designerMap.set(profile.id, profile.name || 'Unnamed Designer');
+            });
+            
+            // Añadir el nombre del diseñador a cada proyecto
+            const projectsWithDesigners = projectsData.map(project => ({
+              ...project,
+              designer_name: project.designer_id ? designerMap.get(project.designer_id) : null
+            }));
+            
+            setProjects(projectsWithDesigners);
+            return;
+          }
+        }
+        
+        setProjects(projectsData || []);
       } catch (error) {
         console.error("Error fetching projects:", error)
       } finally {
@@ -190,8 +222,20 @@ export default function DashboardPage() {
                   <CardDescription className="line-clamp-2">{project.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="pb-2">
-                  <div className="text-sm text-gray-500">
-                    {new Date(project.created_at).toLocaleDateString()}
+                  <div className="flex flex-col space-y-1">
+                    <div className="text-sm text-gray-500">
+                      {new Date(project.created_at).toLocaleDateString()}
+                    </div>
+                    {/* Mostrar el diseñador asignado si existe */}
+                    {project.designer_id && (
+                      <div className="flex items-center text-sm">
+                        <span className="text-gray-500 mr-1">Designer:</span>
+                        <span className="font-medium text-gray-700">{project.designer_name || 'Assigned'}</span>
+                      </div>
+                    )}
+                    {!project.designer_id && (
+                      <div className="text-sm text-amber-600">No designer assigned</div>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-between pt-2">
