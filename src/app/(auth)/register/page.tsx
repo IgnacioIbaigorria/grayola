@@ -6,6 +6,7 @@ import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { UserRole } from "@/types"
 
 export default function RegisterPage() {
@@ -87,9 +88,9 @@ export default function RegisterPage() {
             )}
             
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+              <Label>
                 Full Name
-              </label>
+              </Label>
               <div className="mt-1">
                 <Input
                   id="name"
@@ -105,9 +106,9 @@ export default function RegisterPage() {
             </div>
             
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <Label>
                 Email address
-              </label>
+              </Label>
               <div className="mt-1">
                 <Input
                   id="email"
@@ -123,9 +124,9 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <Label>
                 Password
-              </label>
+              </Label>
               <div className="mt-1">
                 <Input
                   id="password"
@@ -141,9 +142,9 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+              <Label>
                 Role
-              </label>
+              </Label>
               <div className="mt-1">
                 <select
                   id="role"

@@ -15,6 +15,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { UserContext } from "../../../../lib/context/user-context"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function ProjectDetailPage({ 
   params, 
@@ -32,6 +33,10 @@ export default function ProjectDetailPage({
   const [assigningDesigner, setAssigningDesigner] = useState(false)
   const router = useRouter()
   const currentUser = useContext(UserContext);
+  const [showAlert, setShowAlert] = useState(false)
+  const [alertMessage, setAlertMessage] = useState("")
+  const [alertType, setAlertType] = useState<"default" | "destructive">("default")
+
 
   // Usar currentUser si está disponible
   useEffect(() => {
@@ -40,111 +45,111 @@ export default function ProjectDetailPage({
     }
   }, [currentUser]);
 
-  // Modificar fetchProjectData para no verificar autenticación si ya tenemos el usuario
-  useEffect(() => {
-    const fetchProjectData = async () => {
-      try {
-        // Asegúrate de que id está disponible
-        if (!id) {
-          console.error("Project ID is undefined")
-          setError("Project ID is missing")
-          setLoading(false)
+  const fetchProjectData = async () => {
+    try {
+      // Asegúrate de que id está disponible
+      if (!id) {
+        console.error("Project ID is undefined")
+        setError("Project ID is missing")
+        setLoading(false)
+        return
+      }
+
+      // Si no tenemos el usuario del layout, obtenerlo
+      let currentUser = user;
+      if (!currentUser) {
+        // Get current user
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+        
+        if (!authUser) {
+          router.push("/login")
           return
         }
 
-        // Si no tenemos el usuario del layout, obtenerlo
-        let currentUser = user;
-        if (!currentUser) {
-          // Get current user
-          const { data: { user: authUser } } = await supabase.auth.getUser()
-          
-          if (!authUser) {
-            router.push("/login")
-            return
-          }
-
-          // Get user profile with role
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', authUser.id)
-            .single()
-
-          if (profileError) {
-            throw profileError
-          }
-
-          currentUser = {
-            id: authUser.id,
-            email: authUser.email!,
-            name: profileData.name || 'User',
-            role: profileData.role,
-            created_at: authUser.created_at,
-          }
-
-          setUser(currentUser)
-        }
-
-        // Fetch project - asegúrate de que id es una string
-        const projectId = String(id)
-        const { data: projectData, error: projectError } = await supabase
-          .from('projects')
+        // Get user profile with role
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
           .select('*')
-          .eq('id', projectId)
+          .eq('id', authUser.id)
           .single()
 
-        if (projectError) {
-          throw projectError
+        if (profileError) {
+          throw profileError
         }
 
-        // Check if user has access to this project
-        if (
-          currentUser.role !== 'project_manager' && 
-          projectData.client_id !== currentUser.id && 
-          projectData.designer_id !== currentUser.id
-        ) {
-          throw new Error("You don't have permission to view this project")
+        currentUser = {
+          id: authUser.id,
+          email: authUser.email!,
+          name: profileData.name || 'User',
+          role: profileData.role,
+          created_at: authUser.created_at,
         }
 
-        setProject(projectData)
-
-        // Si hay un diseñador asignado, obtener su información
-        if (projectData.designer_id) {
-          const { data: designerData, error: designerError } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', projectData.designer_id)
-            .single()
-
-          if (!designerError && designerData) {
-            // Guardar la información del diseñador en el proyecto
-            setProject(prev => prev ? {
-              ...prev,
-              designer_name: designerData.name || 'Unnamed Designer',
-              designer_email: designerData.email || 'No email'
-            } : null)
-          }
-        }
-
-        // Fetch project files
-        const { data: filesData, error: filesError } = await supabase
-          .from('project_files')
-          .select('*')
-          .eq('project_id', projectId)
-
-        if (filesError) {
-          throw filesError
-        }
-
-        setFiles(filesData || [])
-      } catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : "An error occurred while fetching project data";
-        setError(errorMessage)
-      } finally {
-        setLoading(false)
+        setUser(currentUser)
       }
-    }
 
+      // Fetch project - asegúrate de que id es una string
+      const projectId = String(id)
+      const { data: projectData, error: projectError } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', projectId)
+        .single()
+
+      if (projectError) {
+        throw projectError
+      }
+
+      // Check if user has access to this project
+      if (
+        currentUser.role !== 'project_manager' && 
+        projectData.client_id !== currentUser.id && 
+        projectData.designer_id !== currentUser.id
+      ) {
+        throw new Error("You don't have permission to view this project")
+      }
+
+      setProject(projectData)
+      console.log("Fetched project:", projectData)
+
+      // Si hay un diseñador asignado, obtener su información
+      if (projectData.designer_id) {
+        const { data: designerData, error: designerError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', projectData.designer_id)
+          .single()
+
+        if (!designerError && designerData) {
+          console.log("Fetched designer:", designerData)
+          // Guardar la información del diseñador en el proyecto
+          setProject(prev => prev ? {
+            ...prev,
+            designer_name: designerData.name || 'Unnamed Designer',
+          } : null)
+        }
+      }
+
+      // Fetch project files
+      const { data: filesData, error: filesError } = await supabase
+        .from('project_files')
+        .select('*')
+        .eq('project_id', projectId)
+
+      if (filesError) {
+        throw filesError
+      }
+
+      setFiles(filesData || [])
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "An error occurred while fetching project data";
+      setError(errorMessage)
+    } finally {
+      setLoading(false)
+    }
+  }
+  // Modificar fetchProjectData para no verificar autenticación si ya tenemos el usuario
+  useEffect(() => {
     fetchProjectData()
   }, [id, router, user])
 
@@ -246,13 +251,58 @@ export default function ProjectDetailPage({
 
       // Update the project in state
       setProject(prev => prev ? { ...prev, designer_id: designerId } : null)
-      setIsDesignerDialogOpen(false)
-      alert('Designer assigned successfully')
+      setIsDesignerDialogOpen(false);
+      // Mostrar alerta de éxito
+      setAlertMessage("Designer assigned successfully!")
+      setAlertType("default")
+      setShowAlert(true)      
+      setTimeout(() => {
+        setShowAlert(false)
+        fetchProjectData();
+      }, 3000)
     } catch (error: any) {
       console.error('Error assigning designer:', error)
-      alert('Failed to assign designer')
+      setAlertMessage("Failed to assign designer")
+      setAlertType("destructive")
+      setShowAlert(true)
     } finally {
       setAssigningDesigner(false)
+    }
+  }
+    // Añadir esta función para desasignar diseñadores
+  const unassignDesigner = async () => {
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .update({ designer_id: null })
+        .eq('id', project?.id)
+  
+      if (error) {
+        throw error
+      }
+  
+      // Actualizar el proyecto en el estado
+      setProject(prev => prev ? { 
+        ...prev, 
+        designer_id: null,
+        designer_name: undefined,
+        designer_email: undefined
+      } : null)
+        
+      // Mostrar alerta de éxito
+      setAlertMessage("Designer unassigned successfully!")
+      setAlertType("default")
+      setShowAlert(true)
+      
+      // Ocultar la alerta después de 3 segundos
+      setTimeout(() => {
+        setShowAlert(false)
+      }, 3000)
+    } catch (error: any) {
+      console.error('Error unassigning designer:', error)
+      setAlertMessage("Failed to unassign designer")
+      setAlertType("destructive")
+      setShowAlert(true)
     }
   }
 
@@ -340,6 +390,13 @@ export default function ProjectDetailPage({
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {showAlert && (
+          <div className="mb-4">
+            <Alert variant={alertType}>
+              <AlertDescription>{alertMessage}</AlertDescription>
+            </Alert>
+          </div>
+        )}
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <h1 className="text-2xl font-bold text-gray-900">{project.title}</h1>
@@ -355,6 +412,11 @@ export default function ProjectDetailPage({
                   <Button onClick={handleAssignDesigner}>
                     Assign Designer
                   </Button>
+                  {project.designer_id && (
+                    <Button variant="outline" className="text-red-500 border-red-200 hover:bg-red-50"                    onClick={unassignDesigner}>
+                      Unassign Designer 
+                      </Button>
+                  )}
                 </>
               )}
             </div>
@@ -428,9 +490,6 @@ export default function ProjectDetailPage({
                   <dt className="text-sm font-medium text-gray-500">Designer</dt>
                   <dd className="mt-1 text-sm text-gray-900">
                     {project.designer_name || 'Assigned Designer'}
-                    {project.designer_email && (
-                      <span className="block text-xs text-gray-500">{project.designer_email}</span>
-                    )}
                   </dd>
                 </div>
               )}

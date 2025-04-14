@@ -6,6 +6,7 @@ import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -55,9 +56,9 @@ export default function LoginPage() {
               </div>
             )}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <Label>
                 Email address
-              </label>
+              </Label>
               <div className="mt-1">
                 <Input
                   id="email"
@@ -73,9 +74,9 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <Label>
                 Password
-              </label>
+              </Label>
               <div className="mt-1">
                 <Input
                   id="password"
