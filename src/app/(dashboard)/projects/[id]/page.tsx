@@ -255,10 +255,10 @@ export default function ProjectDetailPage({
       // Mostrar alerta de éxito
       setAlertMessage("Designer assigned successfully!")
       setAlertType("default")
-      setShowAlert(true)      
+      setShowAlert(true)   
+      fetchProjectData();   
       setTimeout(() => {
         setShowAlert(false)
-        fetchProjectData();
       }, 3000)
     } catch (error: any) {
       console.error('Error assigning designer:', error)
@@ -409,9 +409,11 @@ export default function ProjectDetailPage({
                   <Link href={`/projects/${project.id}/edit`}>
                     <Button variant="outline">Edit</Button>
                   </Link>
+                {!project.designer_id && (
                   <Button onClick={handleAssignDesigner}>
                     Assign Designer
                   </Button>
+                )}
                   {project.designer_id && (
                     <Button variant="outline" className="text-red-500 border-red-200 hover:bg-red-50"                    onClick={unassignDesigner}>
                       Unassign Designer 
