@@ -402,21 +402,21 @@ export default function ProjectDetailPage({
             <h1 className="text-2xl font-bold text-gray-900">{project.title}</h1>
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" onClick={() => router.push("/dashboard")}>
-                Back
+                Volver
               </Button>
               {user?.role === 'project_manager' && (
                 <>
                   <Link href={`/projects/${project.id}/edit`}>
-                    <Button variant="outline">Edit</Button>
+                    <Button variant="outline">Editar</Button>
                   </Link>
                 {!project.designer_id && (
                   <Button onClick={handleAssignDesigner}>
-                    Assign Designer
+                    Asignar diseñador
                   </Button>
                 )}
                   {project.designer_id && (
                     <Button variant="outline" className="text-red-500 border-red-200 hover:bg-red-50"                    onClick={unassignDesigner}>
-                      Unassign Designer 
+                      Desasignar diseñador 
                       </Button>
                   )}
                 </>
@@ -467,16 +467,16 @@ export default function ProjectDetailPage({
           </div>
 
           <div className="px-6 py-5 border-t border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900 mb-2">Project Details</h2>
+            <h2 className="text-lg font-medium text-gray-900 mb-2">Detalles del proyecto</h2>
             <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
               <div>
-                <dt className="text-sm font-medium text-gray-500">Created</dt>
+                <dt className="text-sm font-medium text-gray-500">Creado</dt>
                 <dd className="mt-1 text-sm text-gray-900">
                   {new Date(project.created_at).toLocaleDateString()}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
+                <dt className="text-sm font-medium text-gray-500">Última modificación</dt>
                 <dd className="mt-1 text-sm text-gray-900">
                   {new Date(project.updated_at).toLocaleDateString()}
                 </dd>
@@ -484,14 +484,14 @@ export default function ProjectDetailPage({
               <div>
                 <dt className="text-sm font-medium text-gray-500">Status</dt>
                 <dd className="mt-1 text-sm text-gray-900">
-                  {project.designer_id ? "Assigned" : "Unassigned"}
+                  {project.designer_id ? "Asignado" : "No asignado"}
                 </dd>
               </div>
               {project.designer_id && (
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Designer</dt>
+                  <dt className="text-sm font-medium text-gray-500">Diseñador</dt>
                   <dd className="mt-1 text-sm text-gray-900">
-                    {project.designer_name || 'Assigned Designer'}
+                    {project.designer_name || 'Diseñador asignado'}
                   </dd>
                 </div>
               )}

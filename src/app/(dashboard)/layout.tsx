@@ -80,7 +80,7 @@ export default function DashboardLayout({
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="w-full max-w-md p-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold">Loading...</h2>
+            <h2 className="text-2xl font-bold">Cargando...</h2>
           </div>
           <div className="space-y-4">
             <Skeleton className="h-8 w-full" />
@@ -107,7 +107,7 @@ export default function DashboardLayout({
                 <div className="flex">
                   <div className="flex-shrink-0 flex items-center">
                     <Link href="/dashboard" className="text-xl font-bold text-gray-900">
-                      Design Platform
+                      Plataforma de proyectos
                     </Link>
                   </div>
                   {/* Navegación para escritorio - oculta en móvil */}
@@ -120,7 +120,7 @@ export default function DashboardLayout({
                           : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                       }`}
                     >
-                      Dashboard
+                      Inicio
                     </Link>
                     {user?.role === 'client' && (
                       <Link 
@@ -130,8 +130,7 @@ export default function DashboardLayout({
                             ? "border-indigo-500 text-gray-900" 
                             : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                         }`}
-                      >
-                        New Project
+                      >Nuevo proyecto
                       </Link>
                     )}
                   </div>
@@ -144,11 +143,11 @@ export default function DashboardLayout({
                     </div>
                     <Link href="/profile">
                       <Button variant="outline" size="sm">
-                        Profile
+                        Perfil
                       </Button>
                     </Link>
                     <Button variant="outline" size="sm" onClick={handleSignOut}>
-                      Sign out
+                      Cerrar sesión
                     </Button>
                   </div>
                   
@@ -203,7 +202,7 @@ export default function DashboardLayout({
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Dashboard
+                      Inicio
                     </Link>
                     {user?.role === 'client' && (
                       <Link
@@ -215,7 +214,7 @@ export default function DashboardLayout({
                         }`}
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        New Project
+                        Nuevo proyecto
                       </Link>
                     )}
                     <Link
@@ -227,7 +226,7 @@ export default function DashboardLayout({
                       }`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Profile
+                      Perfil
                     </Link>
                   </div>
                 </div>
@@ -248,7 +247,7 @@ export default function DashboardLayout({
                     }}
                     className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
-                    Sign out
+                    Cerrar sesión
                   </button>
                 </div>
               </div>

@@ -243,12 +243,12 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Edit Project</h1>
+        <h1 className="text-2xl font-bold">Editar proyecto</h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Project Details</CardTitle>
+          <CardTitle>Detalles del proyecto</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -260,7 +260,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             
             <div className="space-y-2">
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Project Title
+                Título del proyecto
               </label>
               <Input
                 id="title"
@@ -272,7 +272,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             
             <div className="space-y-2">
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                Description
+                Descripción
               </label>
               <Textarea
                 id="description"
@@ -285,10 +285,10 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
-                Current Files
+                Archivos actuales
               </label>
               {files.length === 0 ? (
-                <p className="text-sm text-gray-500">No files attached to this project.</p>
+                <p className="text-sm text-gray-500">No hay archivos adjuntos en este proyecto.</p>
               ) : (
                 <ul className="divide-y divide-gray-200 border rounded-md">
                   {files.map((file) => (
@@ -309,7 +309,7 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             
             <div className="space-y-2">
               <label htmlFor="newFiles" className="block text-sm font-medium text-gray-700">
-                Add New Files
+                Agregar nuevos archivos
               </label>
               <Input
                 id="newFiles"
@@ -326,10 +326,10 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             
             <div className="flex justify-end space-x-4">
               <Link href={`/projects/${id}`}>
-                <Button type="button" variant="outline">Cancel</Button>
+                <Button type="button" variant="outline">Cancelar</Button>
               </Link>
               <Button type="submit" variant="gradient" disabled={saving}>
-                {saving ? "Saving..." : "Save Changes"}
+                {saving ? "Guardando..." : "Guardar cambios"}
               </Button>
             </div>
           </form>
@@ -343,20 +343,20 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
             <DialogTitle>Delete File</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p>Are you sure you want to delete the file "{fileToDelete?.file_name}"? This action cannot be undone.</p>
+            <p>¿Seguro que quieres eliminar el archivo "{fileToDelete?.file_name}"? Esta acción no se puede deshacer.</p>
           </div>
           <DialogFooter>
             <Button 
               variant="outline" 
               onClick={() => setIsDeleteDialogOpen(false)}
             >
-              Cancel
+              Cancelar
             </Button>
             <Button 
               variant="destructive" 
               onClick={handleDeleteFile}
             >
-              Delete File
+              Eliminar archivo
             </Button>
           </DialogFooter>
         </DialogContent>

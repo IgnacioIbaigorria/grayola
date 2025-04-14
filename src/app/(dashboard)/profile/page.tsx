@@ -152,18 +152,18 @@ export default function ProfilePage() {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">Nombre</Label>
               <Input
                 id="name"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Your name"
+                placeholder="Tu nombre"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Correo</Label>
               <Input
                 id="email"
                 type="email"
@@ -171,11 +171,11 @@ export default function ProfilePage() {
                 disabled
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <p className="text-xs text-gray-500">Your email cannot be changed</p>
+              <p className="text-xs text-gray-500">No puedes modificar tu correo</p>
               </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
+              <Label htmlFor="role">Rol</Label>
               <Input
                 id="role"
                 type="text"
@@ -183,7 +183,7 @@ export default function ProfilePage() {
                 disabled
                 className="bg-gray-50"
               />
-              <p className="text-xs text-gray-500">Your role cannot be changed</p>
+              <p className="text-xs text-gray-500">No puedes modificar tu rol</p>
             </div>
 
             <div className="flex justify-between pt-4">
@@ -192,13 +192,13 @@ export default function ProfilePage() {
                 variant="outline" 
                 onClick={() => router.push("/dashboard")}
               >
-                Back to Dashboard
+                Volver al inicio
               </Button>
               <Button 
                 type="submit" 
                 disabled={updating || !hasChanges()}
               >
-                {updating ? "Updating..." : "Update Profile"}
+                {updating ? "Actualizando..." : "Actualizar perfil"}
               </Button>
             </div>
           </form>

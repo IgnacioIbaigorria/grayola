@@ -140,12 +140,12 @@ export default function NewProjectPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold">Create New Project</h1>
+        <h1 className="text-2xl font-bold">Crear un nuevo proyecto</h1>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Project Details</CardTitle>
+          <CardTitle>Detalles del proyecto</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -157,7 +157,7 @@ export default function NewProjectPage() {
             
             <div className="space-y-2">
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Project Title
+                Título del proyecto
               </label>
               <Input
                 id="title"
@@ -169,7 +169,7 @@ export default function NewProjectPage() {
             
             <div className="space-y-2">
               <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                Description
+                Descripción
               </label>
               <Textarea
                 id="description"
@@ -182,7 +182,7 @@ export default function NewProjectPage() {
             
             <div className="space-y-2">
               <label htmlFor="files" className="block text-sm font-medium text-gray-700">
-                Upload Files (optional)
+                Cargar archivos (opcional)
               </label>
               <Input
                 id="files"
@@ -199,7 +199,7 @@ export default function NewProjectPage() {
             
             <div className="flex justify-end space-x-4">
               <Link href="/dashboard">
-                <Button type="button" variant="outline">Cancel</Button>
+                <Button type="button" variant="outline">Cancelar</Button>
               </Link>
               <Button 
                 type="submit" 
@@ -218,7 +218,7 @@ export default function NewProjectPage() {
                     </span>
                   </>
                 ) : (
-                  "Create Project"
+                  "Crear proyecto"
                 )}
               </Button>
             </div>

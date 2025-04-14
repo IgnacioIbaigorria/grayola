@@ -194,7 +194,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Projects</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Proyectos</h2>
           {user?.role === 'client' && (
             <Link href="/projects/new">
               <Button variant="gradient">Create New Project</Button>
@@ -229,30 +229,30 @@ export default function DashboardPage() {
                     {/* Mostrar el diseñador asignado si existe */}
                     {project.designer_id && (
                       <div className="flex items-center text-sm">
-                        <span className="text-gray-500 mr-1">Designer:</span>
+                        <span className="text-gray-500 mr-1">Diseñador:</span>
                         <span className="font-medium text-gray-700">{project.designer_name || 'Assigned'}</span>
                       </div>
                     )}
                     {!project.designer_id && (
-                      <div className="text-sm text-amber-600">No designer assigned</div>
+                      <div className="text-sm text-amber-600">Sin diseñador asignado</div>
                     )}
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-between pt-2">
                   <Link href={`/projects/${project.id}`}>
-                    <Button variant="outline">View Details</Button>
+                    <Button variant="outline">Ver detalles</Button>
                   </Link>
                   {user?.role === 'project_manager' && (
                     <div className="flex space-x-2">
                       <Link href={`/projects/${project.id}/edit`}>
-                        <Button variant="secondary" size="sm">Edit</Button>
+                        <Button variant="secondary" size="sm">Editar</Button>
                       </Link>
                       <Button 
                         variant="destructive" 
                         size="sm"
                         onClick={() => handleDeleteClick(project.id)}
                       >
-                        Delete
+                        Eliminar
                       </Button>
                     </div>
                   )}
@@ -265,23 +265,23 @@ export default function DashboardPage() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogTitle>Confirmar eliminación</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p>Are you sure you want to delete this project? This action cannot be undone.</p>
+            <p>¿Estás seguro que quieres eliminar este proyecto? Esta acción no se puede deshacer.</p>
           </div>
           <DialogFooter>
             <Button 
               variant="outline" 
               onClick={() => setIsDeleteDialogOpen(false)}
             >
-              Cancel
+              Cancelar
             </Button>
             <Button 
               variant="destructive" 
               onClick={handleDeleteProject}
             >
-              Delete Project
+              Eliminar
             </Button>
           </DialogFooter>
         </DialogContent>

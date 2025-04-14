@@ -43,7 +43,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col items-center justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
+          Inicia sesión en tu cuenta
         </h2>
       </div>
 
@@ -57,7 +57,7 @@ export default function LoginPage() {
             )}
             <div>
               <Label>
-                Email address
+                Correo
               </Label>
               <div className="mt-1">
                 <Input
@@ -66,7 +66,7 @@ export default function LoginPage() {
                   type="email"
                   autoComplete="email"
                   required
-                  placeholder="Enter your email"
+                  placeholder="Ingrese su correo"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -75,7 +75,7 @@ export default function LoginPage() {
 
             <div>
               <Label>
-                Password
+                Contraseña
               </Label>
               <div className="mt-1">
                 <Input
@@ -83,7 +83,7 @@ export default function LoginPage() {
                   name="password"
                   type="password"
                   autoComplete="current-password"
-                  placeholder="Enter your password"
+                  placeholder="Ingrese su contraseña"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -97,7 +97,7 @@ export default function LoginPage() {
                 className="w-full"
                 disabled={loading}
               >
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? "Iniciando sesión..." : "Iniciar sesión"}
               </Button>
             </div>
           </form>
@@ -109,7 +109,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="bg-white px-2 text-gray-500">
-                  Or
+                  O
                 </span>
               </div>
             </div>
@@ -121,7 +121,7 @@ export default function LoginPage() {
                   variant="outline"
                   className="w-full"
                 >
-                  Register
+                  Registrarse
                 </Button>
               </Link>
             </div>

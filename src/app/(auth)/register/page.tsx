@@ -74,7 +74,7 @@ export default function RegisterPage() {
     <div className="flex min-h-screen flex-col items-center justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Create a new account
+          Crear una cuenta nueva
         </h2>
       </div>
 
@@ -89,7 +89,7 @@ export default function RegisterPage() {
             
             <div>
               <Label>
-                Full Name
+                Nombre completo
               </Label>
               <div className="mt-1">
                 <Input
@@ -107,7 +107,7 @@ export default function RegisterPage() {
             
             <div>
               <Label>
-                Email address
+                Correo
               </Label>
               <div className="mt-1">
                 <Input
@@ -115,7 +115,7 @@ export default function RegisterPage() {
                   name="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="Enter your email"
+                  placeholder="Ingrese su correo"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -125,7 +125,7 @@ export default function RegisterPage() {
 
             <div>
               <Label>
-                Password
+                Contraseña
               </Label>
               <div className="mt-1">
                 <Input
@@ -133,7 +133,7 @@ export default function RegisterPage() {
                   name="password"
                   type="password"
                   autoComplete="new-password"
-                  placeholder="Enter your password"
+                  placeholder="Ingrese su contraseña"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -143,7 +143,7 @@ export default function RegisterPage() {
 
             <div>
               <Label>
-                Role
+                Rol
               </Label>
               <div className="mt-1">
                 <select
@@ -153,9 +153,9 @@ export default function RegisterPage() {
                   value={role}
                   onChange={(e) => setRole(e.target.value as UserRole)}
                 >
-                  <option value="client">Client</option>
+                  <option value="client">Cliente</option>
                   <option value="project_manager">Project Manager</option>
-                  <option value="designer">Designer</option>
+                  <option value="designer">Diseñador</option>
                 </select>
               </div>
             </div>
