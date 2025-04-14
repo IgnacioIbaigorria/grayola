@@ -199,7 +199,7 @@ export default function DashboardPage() {
           <h2 className="text-xl font-semibold text-gray-900">Proyectos</h2>
           {user?.role === 'client' && (
             <Link href="/projects/new">
-              <Button variant="gradient">Create New Project</Button>
+              <Button variant="gradient">Crear un proyecto nuevo</Button>
             </Link>
           )}
         </div>
