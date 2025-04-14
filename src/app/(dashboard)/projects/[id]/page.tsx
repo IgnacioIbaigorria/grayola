@@ -482,7 +482,7 @@ export default function ProjectDetailPage({
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">Status</dt>
+                <dt className="text-sm font-medium text-gray-500">Estado</dt>
                 <dd className="mt-1 text-sm text-gray-900">
                   {project.designer_id ? "Asignado" : "No asignado"}
                 </dd>
