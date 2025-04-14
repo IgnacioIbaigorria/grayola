@@ -51,8 +51,10 @@ export default function DashboardPage() {
         if (user.role === 'client') {
           query = query.eq('client_id', user.id)
         } else if (user.role === 'designer') {
+          // Diseñadores solo pueden ver proyectos asignados a ellos
           query = query.eq('designer_id', user.id)
         }
+        // Los project_manager pueden ver todos los proyectos (no se aplica filtro)
 
         // Ordenar por fecha de creación (más recientes primero)
         query = query.order('created_at', { ascending: false })
@@ -205,7 +207,11 @@ export default function DashboardPage() {
         {projects.length === 0 ? (
           <Card className="w-full">
             <CardContent className="pt-6 text-center">
-              <p className="text-gray-500">No projects found.</p>
+              {user?.role === 'designer' ? (
+                <p className="text-gray-500">No tienes proyectos asignados actualmente.</p>
+              ) : (
+                <p className="text-gray-500">No hay proyectos.</p>
+              )}
               {user?.role === 'client' && (
                 <Link href="/projects/new">
                   <Button className="mt-4" variant="gradient">Create Your First Project</Button>

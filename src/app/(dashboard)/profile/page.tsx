@@ -135,7 +135,7 @@ export default function ProfilePage() {
       <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="px-6 py-5 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Your Profile</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Tu perfil</h1>
           </div>
 
           <form onSubmit={handleUpdateProfile} className="px-6 py-5 space-y-6">
