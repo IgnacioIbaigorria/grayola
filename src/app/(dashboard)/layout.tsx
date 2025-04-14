@@ -9,6 +9,7 @@ import { User } from "@/types"
 import { Skeleton } from "@/components/ui/skeleton"
 import React from "react"
 import { UserContext } from "@/lib/context/user-context"
+import { Menu, X } from "lucide-react" // Importar iconos para el menú
 
 export default function DashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default function DashboardLayout({
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [authChecked, setAuthChecked] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false) // Estado para el menú móvil
   const router = useRouter()
   const pathname = usePathname()
 
@@ -108,6 +110,7 @@ export default function DashboardLayout({
                       Design Platform
                     </Link>
                   </div>
+                  {/* Navegación para escritorio - oculta en móvil */}
                   <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                     <Link 
                       href="/dashboard" 
@@ -134,6 +137,7 @@ export default function DashboardLayout({
                   </div>
                 </div>
                 <div className="flex items-center">
+                  {/* Información de usuario y botones para escritorio */}
                   <div className="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center space-x-4">
                     <div className="text-sm text-gray-700">
                       {user?.name || user?.email}
@@ -147,9 +151,116 @@ export default function DashboardLayout({
                       Sign out
                     </Button>
                   </div>
+                  
+                  {/* Botón de menú hamburguesa para móvil */}
+                  <div className="flex items-center sm:hidden">
+                    <button
+                      type="button"
+                      className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                      aria-expanded="false"
+                      onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    >
+                      <span className="sr-only">Open main menu</span>
+                      {mobileMenuOpen ? (
+                        <X className="block h-6 w-6" aria-hidden="true" />
+                      ) : (
+                        <Menu className="block h-6 w-6" aria-hidden="true" />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
+            
+            {/* Menú móvil - panel deslizante desde la derecha */}
+            <div 
+              className={`fixed inset-y-0 right-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+                mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+              } sm:hidden`}
+            >
+              <div className="h-full flex flex-col">
+                <div className="px-4 py-6 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="text-lg font-medium text-gray-900">Menu</div>
+                    <button
+                      type="button"
+                      className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <X className="h-6 w-6" aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto">
+                  <div className="py-4 space-y-1">
+                    <Link
+                      href="/dashboard"
+                      className={`block px-4 py-3 text-base font-medium ${
+                        pathname === "/dashboard"
+                          ? "text-indigo-700 bg-indigo-50"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+                      }`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    {user?.role === 'client' && (
+                      <Link
+                        href="/projects/new"
+                        className={`block px-4 py-3 text-base font-medium ${
+                          pathname === "/projects/new"
+                            ? "text-indigo-700 bg-indigo-50"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+                        }`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        New Project
+                      </Link>
+                    )}
+                    <Link
+                      href="/profile"
+                      className={`block px-4 py-3 text-base font-medium ${
+                        pathname === "/profile"
+                          ? "text-indigo-700 bg-indigo-50"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+                      }`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                  </div>
+                </div>
+                
+                <div className="border-t border-gray-200 p-4">
+                  <div className="mb-4">
+                    <div className="text-base font-medium text-gray-800">
+                      {user?.name || 'User'}
+                    </div>
+                    <div className="text-sm font-medium text-gray-500">
+                      {user?.email}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleSignOut();
+                    }}
+                    className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Overlay para cerrar el menú al hacer clic fuera */}
+            {mobileMenuOpen && (
+              <div 
+                className="fixed inset-0 backdrop-blur-sm z-40 sm:hidden"
+                onClick={() => setMobileMenuOpen(false)}
+              ></div>
+            )}
           </nav>
 
           <main>
